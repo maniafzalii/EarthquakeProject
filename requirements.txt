@@ -1,0 +1,6 @@
+pandas~=3.0.5
+requests~=2.34.2
+beautifulsoup4~=4.15.0
+selenium~=4.46.0
+matplotlib~=3.11.1
+numpy~=2.5.1

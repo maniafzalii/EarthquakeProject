@@ -1,0 +1,9 @@
+earthquakes
+
+time	زمان وقوع	DateTime	تاریخ و ساعت دقیق زلزله
+latitude	عرض جغرافیایی	Float	موقعیت شمالی/جنوبی (مثلاً ۳۵.۶۸)
+longitude	طول جغرافیایی	Float	موقعیت شرقی/غربی (مثلاً ۵۱.۳۸)
+depth	عمق	Float	عمق زلزله به کیلومتر
+magnitude	بزرگی	Float	قدرت زلزله (مقیاس ریشتر)
+source	منبع داده	String	نام سایتی که دیتا از آن آمده (مثلاً IRSC یا USGS)
+place	محل وقوع	String	نام منطقه یا نزدیک‌ترین شهر
