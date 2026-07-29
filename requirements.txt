@@ -4,3 +4,5 @@ beautifulsoup4~=4.15.0
 selenium~=4.46.0
 matplotlib~=3.11.1
 numpy~=2.5.1
+SQLAlchemy~=2.0.51
+psycopg2-binary~=2.9.12
