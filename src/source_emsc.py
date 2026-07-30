@@ -24,8 +24,8 @@ def get_min_time():
 
 def scrape_emsc():
     all_earthquake_information=[]
-    options=Options()
-    options.add_argument("--headless")
+    #options=Options()
+    #options.add_argument("--headless")
     driver=webdriver.Firefox()
     driver.get("https://www.emsc.eu/Earthquake_information/")
     driver.maximize_window()
@@ -112,8 +112,8 @@ def scrape_emsc():
                     earthquake_region=data.find_element(By.CLASS_NAME,'tbreg').text
  
                     #save information of each row in a dictionary and append to list of all earthquakes
-                    earthquake_info={'date ':earthquake_date,'latitude ':earthquake_latitude,'longtitude ':earthquake_longitude,'depth ':earthquake_depth,
-                             'magnitude ':earthquake_magnitude,'region ':earthquake_region} 
+                    earthquake_info={'time ':earthquake_date,'latitude ':earthquake_latitude,'longtitude ':earthquake_longitude,'depth ':earthquake_depth,
+                             'magnitude ':earthquake_magnitude,'place ':earthquake_region} 
                     all_earthquake_information.append(earthquake_info)   
                 except Exception as es:
                     print("Exception:Earthquake Data Not Found!  ",es)  
@@ -126,23 +126,21 @@ def scrape_emsc():
                     all_pages_extracted = True
                 else:
                     next_page.click()
+                    #driver.execute_script("arguments[0].click();", next_page)
                     page_number += 1
                     time.sleep(3) 
             except Exception as e:
-                print("Exception:Next Page Not Found! ", e)
-                all_pages_extracted = True
-                                                    
-                                                     
+                print("Exception:Next Page Not Found! ", e)  
+                all_pages_extracted=True  
+                                                                                                  
         except Exception as ex:
             print("Exception Fetch Content Unseccesful ",ex)  
-    erathquake_table=pd.DataFrame(all_earthquake_information)      
-    #get the path of csv file  
-    current_script_path = Path(__file__).resolve()  
-    project_root = current_script_path.parent.parent       
-    raw_folder = project_root / 'data' / 'raw'    
-    raw_folder.mkdir(parents=True, exist_ok=True) 
-    file_path = raw_folder / 'JAPAN_EMSC.csv' 
-    erathquake_table.to_csv(file_path,index=False)
+    erathquake_table=pd.DataFrame(all_earthquake_information)    
+    #get path and save csv 
+    current_path = Path(__file__).resolve()  
+    root=current_path.parent.parent
+    path=root/'data'/'raw'/'JAPAN_EMSC.csv'
+    erathquake_table.to_csv(path,index=False)
     driver.quit()    
 
 scrape_emsc()
