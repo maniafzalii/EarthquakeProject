@@ -143,4 +143,3 @@ def scrape_emsc():
     erathquake_table.to_csv(path,index=False)
     driver.quit()    
 
-scrape_emsc()
