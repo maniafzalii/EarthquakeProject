@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, text
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine, Column, Integer, String, text
+from sqlalchemy.orm import declarative_base
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 Base = declarative_base()
 
 
@@ -18,39 +20,74 @@ class Earthquake(Base):
     source = Column(String(255))
 
 
-database_url = "postgresql+psycopg2://postgres:Postgre1234567@localhost:5432/earthquake_db"
+database_url = os.getenv("DATABASE_URL")
+if not database_url:
+    raise ValueError(".env file not created or link not available.")
 engine = create_engine(database_url)
-Session = sessionmaker(bind=engine)
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)
 
-clean_path = "../data/clean"
-csv_files = [f for f in os.listdir(clean_path)]
-for file in csv_files:
-    file_path = os.path.join(clean_path, file)
-    df = pd.read_csv(file_path)
-    df.to_sql(name="earthquakes", con=engine, if_exists="append", index=False, chunksize=2000)
 
-with engine.connect() as conn:
-    row_count = conn.execute(text("SELECT COUNT(*) FROM earthquakes;")).scalar_one()
+def setup_database():
+    try:
+        Earthquake.__table__.drop(bind=engine, checkfirst=True)
+        Earthquake.__table__.create(bind=engine, checkfirst=True)
+        return True
+    except Exception as e:
+        print(f"Failed to setup database: {e}")
+        return False
 
-with engine.connect() as conn:
-    cols = conn.execute(text("""
-    SELECT
-    column_name,
-    data_type,
-    character_maximum_length,
-    is_nullable
-    FROM information_schema.columns
-    WHERE table_schema='public'
-    AND table_name='earthquakes'
-    ORDER BY ordinal_position;
-    """)).mappings().all()
 
-column_count = len(cols)
-print("---- earthquakes table report ----")
-print(f"Row count   : {row_count}")
-print(f"Column count: {column_count}")
-print("Columns:")
-for c in cols:
-    print(f"- {c['column_name']}: {c['data_type']}")
+def insert_clean_data():
+    clean_path = "../data/clean"
+    try:
+        csv_files = [f for f in os.listdir(clean_path) if f.endswith(".csv")]
+        for file in csv_files:
+            file_path = os.path.join(clean_path, file)
+            df = pd.read_csv(file_path)
+            df.to_sql(name="earthquakes", con=engine, if_exists="append", index=False, chunksize=2000)
+        return True
+    except Exception as e:
+        print(f"Failed to read csv files: {e}")
+        return False
+
+
+def early_database_report():
+    for _ in range(2):
+        try:
+            with engine.connect() as conn:
+                row_count = conn.execute(text("SELECT COUNT(*) FROM earthquakes;")).scalar_one()
+                cols = conn.execute(text("""
+                SELECT
+                column_name,
+                data_type
+                FROM information_schema.columns
+                WHERE table_name='earthquakes'
+                ORDER BY ordinal_position;
+                """)).mappings().all()
+
+            column_count = len(cols)
+            print("---- earthquakes table report ----")
+            print(f"Row count   : {row_count}")
+            print(f"Column count: {column_count}")
+            print("Columns:")
+            for c in cols:
+                print(f"- {c['column_name']}: {c['data_type']}")
+            return True
+
+        except Exception as e:
+            print(f"Failed to generate report: {e}")
+
+    return False
+
+
+def database_setup_and_report():
+    if setup_database():
+        if insert_clean_data():
+            early_database_report()
+        else:
+            return False
+    else:
+        return False
+
+
+if __name__ == "__main__":
+    database_setup_and_report()
