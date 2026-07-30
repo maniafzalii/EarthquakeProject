@@ -44,9 +44,9 @@ def insert_clean_data():
             file_path = os.path.join(clean_path, file)
             df = pd.read_csv(file_path)
             df.to_sql(name="earthquakes", con=engine, if_exists="append", index=False, chunksize=2000)
-            return True
-    except Exception:
-        print("Failed to read csv files")
+        return True
+    except Exception as e:
+        print(f"Failed to read csv files: {e}")
         return False
 
 
@@ -73,8 +73,8 @@ def early_database_report():
                 print(f"- {c['column_name']}: {c['data_type']}")
             return True
 
-        except Exception:
-            print("Failed to generate report.")
+        except Exception as e:
+            print(f"Failed to generate report: {e}")
 
     return False
 
