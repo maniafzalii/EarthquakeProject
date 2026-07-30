@@ -1,3 +1,4 @@
+import os
 import requests
 from datetime import datetime, timedelta
 
@@ -17,7 +18,20 @@ params = {
     "minmagnitude": 1
 }
 
-response = requests.get(url, params=params)
+s = False
+for _ in range(3):
+    try:
+        response = requests.get(url, params=params, timeout=13)
+        response.raise_for_status()
+        with open("../data/raw/JAPAN_USGS.csv", "w", encoding="utf-8") as f:
+            f.write(response.text)
+        s = True
+        break
+    except requests.exceptions.RequestException as e:
+        print("Failed to get data from 'usgs.gov', trying again...")
+        s = False
 
-with open("../data/raw/JAPAN_USGS.csv", "w", encoding="utf-8") as f:
-    f.write(response.text)
+if not s:
+    if os.path.exists("../data/raw/JAPAN_USGS.csv"):
+        os.remove("../data/raw/JAPAN_USGS.csv")
+    print("Failed to get data from 'usgs.gov'")
