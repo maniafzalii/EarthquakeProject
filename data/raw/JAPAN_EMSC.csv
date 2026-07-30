@@ -1,4 +1,4 @@
-date ,latitude ,longtitude ,depth ,magnitude ,region 
+time ,latitude ,longtitude ,depth ,magnitude ,place 
 2026-07-29 21:25:30,32.600,130.700,10,3.0,"KYUSHU, JAPAN"
 2026-07-29 21:10:30,32.700,130.800,10,3.0,"KYUSHU, JAPAN"
 2026-07-29 20:16:35,32.518,130.554,10,4.8,"KYUSHU, JAPAN"
