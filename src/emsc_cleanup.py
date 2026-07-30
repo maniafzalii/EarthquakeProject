@@ -14,7 +14,7 @@ def emsc_cleanup():
             .str.lower()
             .str.replace('\ufeff', '')
         )
-        standard_columns = ['time', 'latitude', 'longitude', 'depth', 'magnitude', 'place', 'source']
+        standard_columns = ['time', 'latitude', 'longtitude', 'depth', 'magnitude', 'place', 'source']
         
         for col in standard_columns:
             if col not in data_frame.columns:
@@ -29,4 +29,4 @@ def emsc_cleanup():
         clean_path.mkdir(parents=True, exist_ok=True)
         clean_file_path=clean_path/'cleaned_emsc.csv'  
         final_emsc.to_csv(clean_file_path,index=False)             
-      
+emsc_cleanup()      
