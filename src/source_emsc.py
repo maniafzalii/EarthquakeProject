@@ -75,7 +75,7 @@ def scrape_emsc():
         button_sheet=driver.find_element(By.CSS_SELECTOR,'div[class="subm"]')
         submit_button=button_sheet.find_element(By.CSS_SELECTOR,'input[type="submit"]')
         submit_button.click()
-        time.sleep(2)
+        time.sleep(0.5)
     except Exception as ex:
         print("Exception:Search Button Not Found! ",ex)  
 
@@ -87,7 +87,7 @@ def scrape_emsc():
         try:
             search_content=driver.find_element(By.CSS_SELECTOR,'div[class="htab"]')
             table_content=search_content.find_element(By.CLASS_NAME,'eqs.table-scroll')
-
+            time.sleep(0.1)
             #scroll page
             last_height=driver.execute_script("return document.body.scrollHeight")
             while True:
@@ -121,7 +121,6 @@ def scrape_emsc():
             
             try:
                 next_page = driver.find_element(By.XPATH, "//div[@class='page-cont']/div[contains(@class, 'spes') and text()='›']")
-                
                 if "dis" in next_page.get_attribute("class"):
                     #all pages extracted
                     all_pages_extracted = True
