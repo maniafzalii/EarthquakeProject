@@ -27,9 +27,10 @@ def scrape_emsc():
     #options=Options()
     #options.add_argument("--headless")
     driver=webdriver.Firefox()
+    wait=WebDriverWait(driver,10)
     driver.get("https://www.emsc.eu/Earthquake_information/")
     driver.maximize_window()
-    time.sleep(2)
+    time.sleep(0.5)
 
     try:
         cookie_selector=driver.find_element(By.CSS_SELECTOR,"a[onclick='setCookieConsent();']")
@@ -59,14 +60,13 @@ def scrape_emsc():
     try:
         search_box=driver.find_element(By.ID,'reg')
         search_box.send_keys('japan')
-        time.sleep(0.5)
-        search_list=driver.find_element(By.CSS_SELECTOR,'div[class="prop"]')
+        search_list = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.prop')))
         select_all=search_list.find_element(By.CLASS_NAME,"checkall")
         select_all.click()
-        time.sleep(1)
+        time.sleep(2)
         send_check=search_list.find_element(By.CSS_SELECTOR,'div[class="prop-send"]')
         send_check.click()
-        time.sleep(1)
+        time.sleep(2)
     except Exception as ex:
         print("Exception:Search Process Failed!  ",ex)    
 
@@ -87,7 +87,6 @@ def scrape_emsc():
         try:
             search_content=driver.find_element(By.CSS_SELECTOR,'div[class="htab"]')
             table_content=search_content.find_element(By.CLASS_NAME,'eqs.table-scroll')
-            time.sleep(0.1)
             #scroll page
             last_height=driver.execute_script("return document.body.scrollHeight")
             while True:
