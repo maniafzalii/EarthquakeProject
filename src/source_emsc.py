@@ -111,7 +111,7 @@ def scrape_emsc():
                     earthquake_region=data.find_element(By.CLASS_NAME,'tbreg').text
  
                     #save information of each row in a dictionary and append to list of all earthquakes
-                    earthquake_info={'time ':earthquake_date,'latitude ':earthquake_latitude,'longtitude ':earthquake_longitude,'depth ':earthquake_depth,
+                    earthquake_info={'time ':earthquake_date,'latitude ':earthquake_latitude,'longitude ':earthquake_longitude,'depth ':earthquake_depth,
                              'magnitude ':earthquake_magnitude,'place ':earthquake_region} 
                     all_earthquake_information.append(earthquake_info)   
                 except Exception as es:
@@ -142,3 +142,4 @@ def scrape_emsc():
     erathquake_table.to_csv(path,index=False)
     driver.quit()    
 
+scrape_emsc()
