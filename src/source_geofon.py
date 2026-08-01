@@ -87,7 +87,7 @@ while True:
     response = requests.get(url, params=params)
     soupp = BeautifulSoup(response.content, "html.parser")
 
-    print(response.status_code)
+    #print(response.status_code)
 
 
     def main_geofon():
