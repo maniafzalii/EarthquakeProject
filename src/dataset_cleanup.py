@@ -1,10 +1,27 @@
 import pandas as pd
 import numpy as np
 import re
+import os
 
-def preprocess_csv(input_path, output_path):
+def preprocess_csv():
 
     try:
+
+        # Define input and output paths dynamically based on project root
+        BASE_DIR = os.path.dirname(
+            os.path.dirname(
+                os.path.abspath(__file__)
+            )
+        )
+
+        input_path = os.path.join(
+            BASE_DIR, "data", "raw", "JAPAN_DATASET.csv"
+        )
+
+        output_path = os.path.join(
+            BASE_DIR,"data", "clean", "cleaned_dataset.csv"
+
+        )
 
         # load Raw CSV
         df = pd.read_csv(input_path)
@@ -120,4 +137,4 @@ def preprocess_csv(input_path, output_path):
         return False
 
 if __name__ == "__main__":
-    preprocess_csv("data/raw/JAPAN_DATASET.csv","data/clean/cleaned_dataset.csv")
+    preprocess_csv()

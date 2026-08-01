@@ -1,22 +1,41 @@
+import os
+import sys
+
+# Add project root directory to Python path
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
+)
+
+sys.path.insert(0, BASE_DIR)
+
 import unittest
 import pandas as pd
-from sqlalchemy import create_engine, text
-from urllib.parse import quote_plus     #Encode special characters in password
+from sqlalchemy import text
+from src.database_setup import get_engine
+
 class TestEarthquake(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        # Read cleaned earthquake dataset
-        cls.df = pd.read_csv("")
+
+        # Read final earthquake dataset
+        csv_path = os.path.join(
+            BASE_DIR, "data", "final", "database.csv"
+        )
+
+        cls.df = pd.read_csv(csv_path, parse_dates=["time"])
 
         # Connect to PostgreSQL database
-        password = quote_plus("")
-        cls.engine = create_engine(
-            f"postgresql+pyscopg2://postgress:{password}@localhost:5432/earthquake_db"
-        )
+        cls.engine, res = get_engine()
+
+        if not res:
+            raise Exception("Database connection failed.")
 
     # Check CSV structure and missing values
     def test_data_correctly(self):
+
         self.assertGreater(len(self.df), 0, "CSV file is empty!")
 
         required_columns = [
@@ -91,3 +110,12 @@ class TestEarthquake(unittest.TestCase):
             len(self.df),
             f"Row count missmatch: CSV has {len(self.df)}, DB has {db_count}"
         )
+
+    # Close the engine
+    @classmethod
+    def tearDownClass(cls):
+        if hasattr(cls, "engine"):
+            cls.engine.dispose()
+
+if __name__ == "__main__":
+    unittest.main()
