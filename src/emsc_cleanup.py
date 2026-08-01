@@ -30,4 +30,3 @@ def emsc_cleanup():
         clean_file_path=clean_path/'cleaned_emsc.csv'  
         final_emsc.to_csv(clean_file_path,index=False)             
 
-emsc_cleanup()   
