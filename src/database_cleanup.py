@@ -1,5 +1,7 @@
 from sqlalchemy import text
 from database_setup import get_engine
+import unicodedata
+import re
 
 # Convert columns from text type to proper database types
 def convert_column_types(engine):
@@ -231,13 +233,165 @@ def create_region_column(engine):
                 ADD COLUMN IF NOT EXISTS region VARCHAR(255);
             """))
 
-            conn.execute(text("""
-                UPDATE earthquakes
-                SET region = SPLIT_PART(place, ',', 1);
-            """))
+            def extract_region(place):
+
+                if place is None:
+                    return None
+
+                place = place.strip()
+
+                # Normalize unicode characters
+                place = unicodedata.normalize("NFKD", place)
+                place = "".join(
+                    char for char in place
+                    if not unicodedata.combining(char)
+                )
+
+                # Remove country only for Japan
+                parts = place.split(",")
+
+                if len(parts) > 1:
+                    country = parts[1].strip().lower()
+
+                    if country.startswith("japan"):
+                        place = ",".join(parts[:-1]).strip()
+
+                    else:
+                        place = place.strip()
+
+                else:
+                    place = place.strip()
+
+                # Convert abbreviation
+                place = re.sub(r"\bisl\.", "islands", place, flags = re.I)
+                lower_place = place.lower()
+
+                # Keep special multi-word regions
+                special_regions = [
+                    "bonin islands",
+                    "izu islands",
+                    "ryukyu islands",
+                    "volcano islands",
+                    "sea of japan"
+                ]
+
+                if lower_place in special_regions:
+                    return place.upper()
+
+                # Remove distance + direction
+                match = re.search(r"\bof\s+(.+)", place, flags=re.I)
+
+                if match:
+                    place = match.group(1).strip()
+
+                lower_place = place.lower()
+
+                # Remove near
+                if lower_place.startswith("near "):
+                    place = place[5:].strip()
+
+                # Remove coast phrases
+                match = re.search(r"coast of\s+(.+)", place, flags=re.I)
+
+                if match:
+                    place = match.group(1).strip()
+
+                # Check special regions again
+                lower_place = place.lower()
+
+                if lower_place in special_regions:
+                    return place.upper()
+
+                # Remove directional prefixes
+                words = place.split()
+
+                if len(words) > 1 and words[0].lower() in [
+                    "eastern",
+                    "western",
+                    "southern",
+                    "northern",
+                    "southwestern",
+                    "northwestern",
+                    "central"
+                ]:
+                    place = " ".join(words[1:])
+
+                lower_place = place.lower()
+
+                # Remove prefecture
+                if lower_place.endswith(" prefecture"):
+                    place = place.split()[0]
+
+
+                # Remove region
+                elif lower_place.endswith(" region"):
+                    place = place.split(" ", 1)[0]
+
+                # Remove year prefix
+                words = place.split()
+
+                if words and words[0].isdigit():
+                    place = " ".join(words[1:])
+
+                # Remove earthquake suffix
+                place = re.sub(r",?\s*japan earthquake.*$", "", place, flags = re.I)
+
+                # Remove extra commas
+                place = place.strip(" ,")
+
+                # Handle combined Japanese regions
+                if "," in place:
+                    parts = [p.strip() for p in place.split(",")]
+
+                    if parts[-1].lower() in [
+                        "ryukyu islands",
+                        "bonin islands",
+                        "izu islands",
+                        "volcano islands",
+                        "sea of japan"
+                    ]:
+                        place = parts[-1]
+
+                return place.upper()
+
+            rows = conn.execute(text("""
+                SELECT id, place
+                FROM earthquakes;
+            """)).fetchall()
+
+
+            for row in rows:
+
+                region = extract_region(row.place)
+
+                conn.execute(text("""
+                    UPDATE earthquakes
+                    SET region = :region
+                    WHERE id = :id;
+                """),
+                {
+                    "region": region,
+                    "id": row.id
+                })
+
+            # Use to find patterns
+            # result = conn.execute(text("""
+            #     SELECT id, place, region
+            #     FROM earthquakes
+            #     WHERE region IS NOT NULL
+            #         AND array_length(string_to_array(region, ' '), 1) > 1
+            #     ORDER BY region;
+            # """))
+
+            # print("\nRegions that are still multi-word:\n")
+
+            # for row in result:
+            #     print(f"{row.id} | {row.region} | {row.place}")
+
+            # Check final unique regions
 
         return True
-    
+
     except Exception as e:
         print(f"Creating region column failed: {e}")
         return False
