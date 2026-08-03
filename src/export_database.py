@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from sqlalchemy import text
-from database_setup import get_engine
+from src.database_setup import get_engine
 
 def export_database():
 
