@@ -101,7 +101,7 @@ def scrape_emsc():
         page_number=1
         all_pages_extracted=False
         while not(all_pages_extracted):
-            print(f"Scraping Page  {page_number}")
+            print(f"Scraping Page {BLUE}{page_number}{RESET} from EMSC")
             try:
                 #get element shows result of search and wait until all data loaded
                 search_content = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.htab")))
@@ -173,6 +173,7 @@ def scrape_emsc():
         root=current_path.parent.parent
         path=root/'data'/'raw'/'JAPAN_EMSC.csv'
         earthquake_table.to_csv(path,index=False)  
+        print("Scrapping Data from EMSC is over !")
         return True     
     except Exception as ex:
         print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
