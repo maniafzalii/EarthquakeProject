@@ -5,4 +5,4 @@ __pycache__/
 shenv/
 .env
 .python-version
-.env
+.DS_Store

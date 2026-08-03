@@ -19,28 +19,21 @@ def main():
     while True:
         user_input_main = input("Enter 1 to start analyzing (0 to exit): ").strip()
         match user_input_main:
-            case "1":   
-                
+            case "1":
                 get_usgs_data()
                 scrapping_geo()
                 scrape_emsc()
                 cleanup_usgs_data()
                 emsc_cleanup()
-                  
                 preprocess_csv()
-                if database_setup_and_report():
-                    database_cleanup()
-                    export_database()
-                    task_10_17()
-                    analyze_database()
-                    generate_plots()
-                    print(f"{GREEN}----- Analyzing finished -----{RESET}")
-                    print(f"{GREEN}----- GoodBye -----{RESET}")
-                    return
-                else:
-                    print("Program closed due to error")
-                    return
-                         
+                database_setup_and_report()
+                database_cleanup()
+                export_database()
+                task_10_17()
+                analyze_database()
+                generate_plots()
+                print(f"{GREEN}----- Analyzing finished -----{RESET}")
+                print(f"{GREEN}----- GoodBye -----{RESET}")
             case "0":
                 print(f"{GREEN}----- GoodBye -----{RESET}")
                 break
