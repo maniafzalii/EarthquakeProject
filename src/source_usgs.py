@@ -30,6 +30,7 @@ def get_usgs_data():
             response.raise_for_status()
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(response.text)
+                print("Data extracted from USGS.")
             return True
 
         except requests.exceptions.RequestException:
