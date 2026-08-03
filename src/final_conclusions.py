@@ -20,8 +20,8 @@ def most_replicated_depth(session):
     for dep in depth_frequency_dict:
         if depth_frequency_dict.get(dep)>=max_count:
             max_count=depth_frequency_dict.get(dep)
-            target_depth=dep
-    print(f"{BOLD}>>>> Earthquakes with Depth {BLUE}{target_depth}{RESET} Have Maximum  Frequency {BLUE} {max_count} {RESET}in the Database !")     
+            target_depth=dep    
+    print(f"{BOLD}>>>> Earthquakes with Depth {BLUE}{target_depth}{RESET}{BOLD} Have Maximum  Frequency {BLUE} {max_count} {RESET}{BOLD}in the Database !{RESET}")     
 
 
 
@@ -36,8 +36,8 @@ def most_replicated_magnitude(session):
     for mag in magnitude_frequency_dict:
         if magnitude_frequency_dict.get(mag)>=max_count:
             max_count=magnitude_frequency_dict.get(mag)
-            target_magnitude=mag
-    print(f">>>> Earthquakes with Magnitude {target_magnitude} Have Maximum Frequency {max_count} in the Database !")   
+            target_magnitude=mag      
+    print(f"{BOLD}>>>> Earthquakes with Magnitude {BLUE} {target_magnitude}{RESET}{BOLD} Have Maximum Frequency{BLUE} {max_count}{RESET}{BOLD} in the Database !{RESET}")   
 
 
 
@@ -48,7 +48,7 @@ def analzye_weak_earthquake(session):
     all_sources_query=session.query(Earthquake.source).distinct().all()
     #get sources cover weak earthquakes
     weak_count_query=(session.query(Earthquake.source,func.count().label("count")).
-                      filter(Earthquake.magnitude<4)
+                      filter(Earthquake.magnitude<4.0)
                       .group_by(Earthquake.source)
                       .all())
     all_sources={source for (source,) in all_sources_query}
@@ -61,12 +61,12 @@ def analzye_weak_earthquake(session):
             source_without_weak.append(source)
     #print list of sources not cover weak earthquakes if exists
     if len(source_without_weak)!=0:
-        print(">>>> All Sources Not Cover Weak Earthquakes")
-        print(">>>> Sources With No Weak Earthquakes :")
+        print(f"{BOLD}>>>> All Sources Not Cover Weak Earthquakes{RESET}")
+        print(f"{BOLD}>>>> Sources With No Weak Earthquakes :{RESET}")
         for s in source_without_weak:
-            print(s)
+            print(f"{BOLD}{GREEN}{s}{RESET}")
     else:
-        print(">>>> All Sources Cover Weak Earthquakes.")   
+        print(f"{BOLD}>>>> All Sources Cover Weak Earthquakes.{RESET}")   
 
 
 
@@ -87,17 +87,17 @@ def compare_weak_sources(session):
             session.query(func.count())
             .filter(
                 Earthquake.source == source,
-                Earthquake.magnitude < 4
+                Earthquake.magnitude < 4.0
             )
             .scalar()
         )
     
         if total_earthquake_dict.get(source)==0:
             weak_percent=0
-            print(f">>>> Weak Earthquake Percent for Source {source} is {weak_percent}% .")    
+            print(f"{BOLD}>>>> Weak Earthquake Percent for Source {BLUE}{source} {RESET}{BOLD} is {BLUE}{weak_percent}% {RESET}")    
         else:
             weak_percent=weak_earthquakes/total_earthquake_dict.get(source)*100
-            print(f">>>> Weak Earthquake Percent for Source {source} is {weak_percent:.2f}% .") 
+            print(f"{BOLD}>>>> Weak Earthquake Percent for Source {BLUE} {source}{RESET}{BOLD} is{BLUE} {weak_percent:.2f}% {RESET}") 
 
 
 
@@ -105,12 +105,12 @@ def compare_weak_sources(session):
 def analyze_strong_earthquake_depth(session):
     
     avg_depth_strong=(session.query(func.avg(Earthquake.depth)).
-                          filter(Earthquake.magnitude>=6)
+                          filter(Earthquake.magnitude>=6.0)
                            .scalar())
     if avg_depth_strong==None:
-        print(">>>> Strong Earthquake Are Not Registered in Earthquak_db !")
+        print(f"{BOLD}>>>> Strong Earthquake Are Not Registered in Earthquak_db !{RESET}")
     else:  
-        print(f">>>> Strong Earthquake Usually Happens at an Average Depth of {avg_depth_strong} !")      
+        print(f"{BOLD}>>>> Strong Earthquake Usually Happens at an Average Depth of {RED} {avg_depth_strong} {RESET}!")      
 
 
               
@@ -125,11 +125,11 @@ def analyze_dangerous_earthquake_order(session):
                                 .order_by(Earthquake.magnitude.desc(),
                                           Earthquake.depth.asc())
                                           .all())
-    print(f">>>> Number of Dangerous Earthquakes"
-          f"High magnitude and Low Depth : {len(dangerous_earthquakes)}")
 
+    print(f"{BOLD}>>>> Number of Dangerous Earthquakes"
+          f"High magnitude and Low Depth :{RED} {len(dangerous_earthquakes)}{RESET}")
     for element in dangerous_earthquakes:
-        print(f">>>> ID {element.id} ,Magnitude {element.magnitude}, Depth {element.depth} ")
+        print(f"{BOLD}>>>> ID {RED} {element.id}{RESET}{BOLD} ,Magnitude {RED} {element.magnitude}{RESET},{BOLD} Depth{RED} {element.depth}{RESET} ")
 
 #compare strong earthquakes,their magnitude >=6, in each sources        
 def analyze_strong_earthquake_count(session):
@@ -152,13 +152,13 @@ def analyze_strong_earthquake_count(session):
     #print result
     for source in all_sources:
         if source not in strong_earthquakes_dict:
-            print(f">>>> {0} Strong Earthquakes Registered for Source {source}")
-            print(f">>>> Strong Earthquake Percent for Source {source} is {0.0}%") 
+            print(f"{BOLD}>>>> {BLUE}{0} {RESET}{BOLD}Strong Earthquakes Registered for Source {BLUE}{source}{RESET}")
+            print(f"{BOLD}>>>> Strong Earthquake Percent for Source{BLUE} {source}{RESET}{BOLD} is {BLUE}{0.0}%{RESET}") 
         else:
             #get strong earthquake percent in each source
             strong_percent=strong_earthquakes_dict.get(source)/total_earthquake_dict.get(source)*100
-            print(f">>>> Number of Strong Earthquakes Registered for Source {source} : {strong_earthquakes_dict.get(source)} ") 
-            print(f">>>> Strong Earthquake Percent for Source {source} is {strong_percent:.2f}%") 
+            print(f"{BOLD}>>>> Number of Strong Earthquakes Registered for Source{BLUE} {source} {RESET}:{BOLD}{BLUE} {strong_earthquakes_dict.get(source)}{RESET} ") 
+            print(f"{BOLD}>>>> Strong Earthquake Percent for Source {BLUE} {source} {RESET} is {BOLD}{BLUE}  {strong_percent:.2f}% {RESET}") 
 
 #analyze behaviour of earthquake in Japan during last month    
 def analyze_japan_earthquake_behaviour(session):
@@ -166,10 +166,9 @@ def analyze_japan_earthquake_behaviour(session):
     total_number=session.query(func.count(Earthquake.id)).scalar()
 
     #extract strong earthquake's data
-    number_strong_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
+    number_strong_earthquakes=(session.query(func.count(Earthquake.id))
                              .filter(Earthquake.magnitude>=6.0)
-                             .group_by(Earthquake.source)
-                             .all())
+                             .scalar())
     avg_strong_earthquakes=(session.query(func.avg(Earthquake.depth))
                             .filter(Earthquake.magnitude>=6.0)
                             .scalar())
@@ -180,10 +179,9 @@ def analyze_japan_earthquake_behaviour(session):
                             .filter(Earthquake.magnitude>=6.0)
                             .scalar())
     #extract moderate earthquake's data
-    number_moderate_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
+    number_moderate_earthquakes=(session.query(func.count(Earthquake.id))
                                 .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
-                                .group_by(Earthquake.source)
-                                .all())
+                                .scalar())
     avg_moderate_earthquakes=(session.query(func.avg(Earthquake.depth))
                               .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
                               .scalar())
@@ -195,9 +193,9 @@ def analyze_japan_earthquake_behaviour(session):
                               .scalar())
 
     #extract weak earthquake's data
-    number_weak_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
+    number_weak_earthquakes=(session.query(func.count(Earthquake.id))
                              .filter(Earthquake.magnitude<4.0)
-                             .group_by(Earthquake.source).all())
+                             .scalar())
     avg_weak_earthquakes=(session.query(func.avg(Earthquake.depth))
                           .filter(Earthquake.magnitude<4.0)
                           .scalar())
@@ -208,12 +206,12 @@ def analyze_japan_earthquake_behaviour(session):
                           .filter(Earthquake.magnitude<4.0)
                           .scalar())
     
-    print(f">>>> During Last Month {total_number} Earthquakes Registered in Japan ")
-    print(">>>> Among them : ")
-    print(f">>>> {number_weak_earthquakes} Weak Earthquakes with average depth {avg_weak_earthquakes:.2f}, maximum depth {max_weak_earthquakes} ,minimum depth {min_weak_earthquakes} ")
-    print(f">>>> {number_moderate_earthquakes} Moderate Earthquakes with average depth {avg_moderate_earthquakes:.2f}, maximum depth {max_moderate_earthquakes} ,minimum depth {min_moderate_earthquakes} ")
-    print(f">>>> {number_strong_earthquakes} Strong Earthquakes with average depth {avg_strong_earthquakes:.2f}, maximum depth {max_strong_earthquakes} ,minimum depth {min_strong_earthquakes} ")
-    print("Are Registered .")
+    print(f"{BOLD}>>>> During Last Month {BLUE}{total_number}{RESET}{BOLD} Earthquakes Registered in Japan {RESET}")
+    print(f"{BOLD}>>>> Among them : ")
+    print(f">>>>{BLUE} {number_weak_earthquakes}{RESET}{BOLD} Weak Earthquakes with average depth {BLUE} {avg_weak_earthquakes:.2f}{RESET}{BOLD}, maximum depth{BLUE} {max_weak_earthquakes}{RESET}{BOLD} ,minimum depth {BLUE}{min_weak_earthquakes}{RESET} ")
+    print(f">>>>{BOLD}{BLUE} {number_moderate_earthquakes} {RESET}{BOLD}Moderate Earthquakes with average depth {BLUE}{avg_moderate_earthquakes:.2f}{RESET}{BOLD}, maximum depth{BLUE} {max_moderate_earthquakes}{RESET}{BOLD} ,minimum depth{BLUE} {min_moderate_earthquakes}{RESET} ")
+    print(f">>>> {BOLD}{BLUE} {number_strong_earthquakes}{RESET}{BOLD} Strong Earthquakes with average depth{BLUE} {avg_strong_earthquakes:.2f}{RESET}{BOLD}, maximum depth {BLUE}{max_strong_earthquakes}{RESET}{BOLD} ,minimum depth {BLUE}{min_strong_earthquakes}{RESET} ")
+    print(f"{BOLD}Are Registered .{RESET}")
 
 #give a suggestion for source combination
 def analyze_source_combination_suggestion(session):
@@ -252,12 +250,12 @@ def analyze_source_combination_suggestion(session):
             max_depth_average=depth_average.get(source)
             depth_source=source        
 
-    print(">>>> You can Choose among Different Sources According blow Information and Your Priority  ")
-    print(f">>>> Source {target_source} Register the Greatest Earthquake Counts {max_count} so It Offers More Precise Data")
+    print(f"{BOLD}>>>> You can Choose among Different Sources According Extracted Information and Your Priority {RESET} ")
+    print(f"{BOLD}>>>> Source{BLUE} {target_source}{RESET}{BOLD} Register the Greatest Earthquake Counts{BLUE} {max_count}{RESET}{BOLD} So It Offers More Precise Data{RESET}")
     
-    print(f">>>> Source {magnitude_source} Register the Greatest Average of Magnitude {max_magnitude_average:.2f} so It Prioritize Magnitude ")
+    print(f"{BOLD}>>>> Source {BLUE} {magnitude_source}{RESET}{BOLD} Register the Greatest Average of Magnitude{BLUE} {max_magnitude_average:.2f}{RESET}{BOLD} So It Prioritize Magnitude{RESET} ")
 
-    print(f">>>> Source {depth_source} Register the Greatest Average of depth {max_depth_average:.2f} so It Prioritize depth ")
+    print(f"{BOLD}>>>> Source{BLUE} {depth_source}{RESET}{BOLD} Register the Greatest Average of depth {BLUE}{max_depth_average:.2f}{RESET}{BOLD} So It Prioritize depth {RESET}")
 
 def analyze_database():
 
@@ -267,22 +265,31 @@ def analyze_database():
        Session=sessionmaker(bind=engine)
        session=Session()
        print(f"{YELLOW}-------- Database Analyze --------{RESET}")
+       print("\n")
        print(f"{YELLOW}Q: What is Depth of the Most Frequent Earthquakes ?{RESET}\n")
        most_replicated_depth(session)
+       print("\n")
        print(f"{YELLOW}Q: What is Magnitude of the Most Frequent Earthquakes ?{RESET}\n")
        most_replicated_magnitude(session)
+       print("\n")
        print(f"{YELLOW}Q: Do All Sources Cover Weak Earthquakes ?{RESET}\n")
        analzye_weak_earthquake(session)
+       print("\n")
        print(f"{YELLOW}Q: What is the difference between Sourcse Cover Weak Earthquakes ?{RESET}\n")
        compare_weak_sources(session)
+       print("\n")
        print(f"{YELLOW}Q: Which Depth Do usually Strong Earthquakes Happen at ?{RESET}\n")
        analyze_strong_earthquake_depth(session)
+       print("\n")
        print(f"{YELLOW}Q: Sort Dangerous Earthquakes. {RESET}\n")
        analyze_dangerous_earthquake_order(session)
+       print("\n")
        print(f"{YELLOW}Q: Compare Strong Earthquakes for Each Source. {RESET}\n")
        analyze_strong_earthquake_count(session)
+       print("\n")
        print(f"{YELLOW}Q: What is the Scientific Conclusion of JAPAN's Earthquake Behaviour ? {RESET}\n")
        analyze_japan_earthquake_behaviour(session)
+       print("\n")
        print(f"{YELLOW}Q: What is Your Suggestion for Combination of Sources ? {RESET}\n")
        analyze_source_combination_suggestion(session)
     

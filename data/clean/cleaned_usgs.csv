@@ -42,9 +42,9 @@ time,latitude,longitude,depth,magnitude,place,source
 2026-07-16 16:04:31,34.345,141.3281,10.0,4.5,"128 km SE of Katsuura, Japan",usgs
 2026-07-16 16:00:20,40.3415,142.2767,59.964,4.2,"46 km ENE of Kuji, Japan",usgs
 2026-07-16 00:01:08,35.7203,140.5349,59.688,4.7,"1 km WNW of Sōsa, Japan",usgs
-2026-07-15 12:29:40,40.3221,142.3054,63.294,4.6,"47 km ENE of Noda, Japan",usgs
-2026-07-14 11:20:32,40.1659,143.1121,32.347,4.4,"110 km E of Noda, Japan",usgs
-2026-07-14 08:07:30,40.1657,142.4075,44.48,4.9,"50 km E of Noda, Japan",usgs
+2026-07-15 12:29:40,40.2888,142.3226,64.139,4.6,"47 km ENE of Noda, Japan",usgs
+2026-07-14 11:20:32,40.1722,143.1932,35.0,4.4,"117 km E of Noda, Japan",usgs
+2026-07-14 08:07:31,40.1915,142.4027,56.541,5.0,"50 km E of Noda, Japan",usgs
 2026-07-14 07:44:08,40.0652,143.4072,11.484,5.1,"133 km ENE of Miyako, Japan",usgs
 2026-07-13 17:59:07,37.7887,139.304,157.542,4.1,"8 km SE of Agano, Japan",usgs
 2026-07-13 17:58:26,37.8351,134.5873,412.374,4.0,"215 km WNW of Anamizu, Japan",usgs

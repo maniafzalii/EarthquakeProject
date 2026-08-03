@@ -26,7 +26,7 @@ def main():
                 scrape_emsc()
                 cleanup_usgs_data()
                 emsc_cleanup()
-                     
+                  
                 preprocess_csv()
                 if database_setup_and_report():
                     database_cleanup()

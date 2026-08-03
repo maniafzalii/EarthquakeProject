@@ -8,6 +8,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+BOLD = '\033[1m'
+RESET = '\033[0m'
+
+
 #calculate current date ,but site accept one day ago
 def get_max_time():
     date=datetime.datetime.now()-datetime.timedelta(days=1)
@@ -36,7 +45,7 @@ def scrape_emsc():
            cookie_selector=driver.find_element(By.CSS_SELECTOR,"a[onclick='setCookieConsent();']")
            cookie_selector.click() 
         except Exception as ex:
-           print("Exception: Cookie Not Found! ",ex)  
+           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
 
         #calculate yesterday and one month ago
         # EMSC does not accept today     
@@ -49,7 +58,7 @@ def scrape_emsc():
            driver.execute_script("arguments[0].value = arguments[1];", date_min_box, previous_date)
            driver.execute_script("arguments[0].dispatchEvent(new Event('change'));", date_min_box)
         except Exception as ex:
-            print("Exception:Start Date Entrance Failed! ", ex)
+            print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
             
         #set max date    
         try: 
@@ -57,7 +66,7 @@ def scrape_emsc():
             driver.execute_script("arguments[0].value = arguments[1];", date_max_box, current_date)
             driver.execute_script("arguments[0].dispatchEvent(new Event('change'));", date_max_box)
         except Exception as ex:
-            print("Exception!End Date Entrance Failed! ", ex)   
+            print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
         #set region    
         try:
            search_box=wait.until(EC.element_to_be_clickable((By.ID,'reg')))
@@ -74,9 +83,7 @@ def scrape_emsc():
            send_check.click()
            time.sleep(1)
         except Exception as ex:
-           print("Exception:Search Process Failed!  ")   
-           print("Exception Type : ",type(ex).__name__)
-           print("Exception : ",repr(ex))
+           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
            return False 
            
 
@@ -86,7 +93,7 @@ def scrape_emsc():
            submit_button.click()
            time.sleep(2)
         except Exception as ex:
-           print("Exception:Search Button Not Found! ",ex)  
+           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
            return False
            
 
@@ -101,14 +108,14 @@ def scrape_emsc():
                 #get the table inside div.htab
                 table_content= search_content.find_element(By.CSS_SELECTOR, ".eqs.table-scroll")
                 #scroll page
-                #last_height=driver.execute_script("return document.body.scrollHeight")
-                #while True:
-                #    driver.execute_script('window.scrollTo(0,document.body.scrollHeight)')
-                #    time.sleep(5)
-                #    new_height=driver.execute_script("return document.body.scrollHeight")
-                #    if new_height==last_height:
-                #       break
-                #    last_height=new_height
+                last_height=driver.execute_script("return document.body.scrollHeight")
+                while True:
+                    driver.execute_script('window.scrollTo(0,document.body.scrollHeight)')
+                    time.sleep(5)
+                    new_height=driver.execute_script("return document.body.scrollHeight")
+                    if new_height==last_height:
+                       break
+                    last_height=new_height
 
                 #find data of each row (every earthquake)    
                 earthquake_search_data=table_content.find_elements(By.CSS_SELECTOR,'tr')
@@ -127,15 +134,15 @@ def scrape_emsc():
  
                         #save information of each row in a dictionary and append to list of all earthquakes
                         earthquake_info={
-                            'time ':earthquake_date,
-                            'latitude ':earthquake_latitude,
-                            'longitude ':earthquake_longitude,
-                            'depth ':earthquake_depth,
-                            'magnitude ':earthquake_magnitude,
-                            'place ':earthquake_region} 
+                            'time':earthquake_date,
+                            'latitude':earthquake_latitude,
+                            'longitude':earthquake_longitude,
+                            'depth':earthquake_depth,
+                            'magnitude':earthquake_magnitude,
+                            'place':earthquake_region} 
                         all_earthquake_information.append(earthquake_info)   
                     except Exception as es:
-                        print("Exception:Earthquake Data Not Found!  ",es)  
+                        print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
                         continue     
             
                 try:
@@ -154,21 +161,21 @@ def scrape_emsc():
                         page_number += 1
                         time.sleep(3)
                 except Exception as e:
-                    print("Exception:Next Page Not Found! ", e)  
+                    print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
                     break
                                                                                                   
             except Exception as ex:
-                print("Exception Fetch Content Unseccesful ",ex)  
+                print(f"{RED}Exception Occured During Scraping EMSC !{RESET}") 
                 break
-        erathquake_table=pd.DataFrame(all_earthquake_information)    
+        earthquake_table=pd.DataFrame(all_earthquake_information)    
         #get path and save csv 
         current_path = Path(__file__).resolve()  
         root=current_path.parent.parent
         path=root/'data'/'raw'/'JAPAN_EMSC.csv'
-        erathquake_table.to_csv(path,index=False)  
+        earthquake_table.to_csv(path,index=False)  
         return True     
     except Exception as ex:
-        print("Exception Driver Not Load ",ex)    
+        print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
         return False    
     finally:
         if driver:
