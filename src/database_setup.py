@@ -27,8 +27,8 @@ def get_engine():
             raise ValueError(".env file not created or link not available.")
         engine = create_engine(database_url)
         return engine, True
-    except Exception as e:
-        print(e)
+    except Exception:
+        print("failed to create engine.")
         return None, False
 
 
@@ -37,8 +37,8 @@ def setup_database(engine):
         Earthquake.__table__.drop(bind=engine, checkfirst=True)
         Earthquake.__table__.create(bind=engine, checkfirst=True)
         return True
-    except Exception as e:
-        print(f"Failed to setup database: {e}")
+    except Exception:
+        print(f"Failed to setup database.")
         return False
 
 
@@ -53,8 +53,8 @@ def insert_clean_data(engine):
             df = pd.read_csv(file_path)
             df.to_sql(name="earthquakes", con=engine, if_exists="append", index=False, chunksize=2000)
         return True
-    except Exception as e:
-        print(f"Failed to read csv files: {e}")
+    except Exception:
+        print(f"Failed to read csv files.")
         return False
 
 
@@ -80,8 +80,8 @@ def early_database_report(engine):
             print(f"- {c['column_name']}: {c['data_type']}")
         return True
 
-    except Exception as e:
-        print(f"Failed to generate report: {e}")
+    except Exception:
+        print(f"Failed to generate report.")
         return False
 
 

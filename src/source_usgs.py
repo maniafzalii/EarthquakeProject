@@ -32,7 +32,7 @@ def get_usgs_data():
                 f.write(response.text)
             return True
 
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             print("Failed to get data from 'usgs.gov', trying again...")
 
     if os.path.exists(file_path):
