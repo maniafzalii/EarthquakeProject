@@ -1,9 +1,11 @@
+import requests, re, pandas
+from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
+from pathlib import Path
+
+
 def scrapping_geo():
 
-    import requests, re, pandas
-    from bs4 import BeautifulSoup
-    from datetime import datetime, timedelta
-    from pathlib import Path
 
     url = "https://geofon.gfz.de/eqinfo/list.php"
 
