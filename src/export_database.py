@@ -34,6 +34,3 @@ def export_database():
     engine.dispose()
 
     print("CSV exported successfully")
-
-if __name__ == "__main__":
-    export_database()

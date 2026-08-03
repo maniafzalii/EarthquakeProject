@@ -116,6 +116,3 @@ class TestEarthquake(unittest.TestCase):
     def tearDownClass(cls):
         if hasattr(cls, "engine"):
             cls.engine.dispose()
-
-if __name__ == "__main__":
-    unittest.main()

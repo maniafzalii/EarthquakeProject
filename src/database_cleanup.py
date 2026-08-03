@@ -445,7 +445,4 @@ def database_cleanup():
     print("\nDatabase cleanup completed successfully")
 
     return True
-
-if __name__ == "__main__":
-    database_cleanup()
     
