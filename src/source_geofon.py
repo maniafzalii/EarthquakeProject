@@ -122,6 +122,4 @@ def scrapping_geo():
 
     df.to_csv(output_dir / "JAPAN_GEOFON.csv", index=False)
     df.to_csv(output_clean_dir / "cleaned_GEOFON.csv", index=False)
-    print("Scrapping Data From GEOFON is Over!")
-
-#scrapping_geo()
+    print("Scrapping Data From GEOFON is Over.")

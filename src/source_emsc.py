@@ -38,14 +38,14 @@ def scrape_emsc():
         wait=WebDriverWait(driver,10)
         driver.get("https://www.emsc.eu/Earthquake_information/")
         driver.maximize_window()
-        time.sleep(1)
+        time.sleep(5)
 
         #find the cookie and click on it
         try:
-           cookie_selector=driver.find_element(By.CSS_SELECTOR,"a[onclick='setCookieConsent();']")
-           cookie_selector.click() 
+            cookie_selector=driver.find_element(By.CSS_SELECTOR,"a[onclick='setCookieConsent();']")
+            cookie_selector.click()
         except Exception as ex:
-           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
+            print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
 
         #calculate yesterday and one month ago
         # EMSC does not accept today     
@@ -53,15 +53,15 @@ def scrape_emsc():
         current_date=get_max_time()
 
         #set min date
-        try: 
-           date_min_box = wait.until(EC.presence_of_element_located((By.ID, 'datemin')))
-           driver.execute_script("arguments[0].value = arguments[1];", date_min_box, previous_date)
-           driver.execute_script("arguments[0].dispatchEvent(new Event('change'));", date_min_box)
+        try:
+            date_min_box = wait.until(EC.presence_of_element_located((By.ID, 'datemin')))
+            driver.execute_script("arguments[0].value = arguments[1];", date_min_box, previous_date)
+            driver.execute_script("arguments[0].dispatchEvent(new Event('change'));", date_min_box)
         except Exception as ex:
             print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
             
         #set max date    
-        try: 
+        try:
             date_max_box = wait.until(EC.presence_of_element_located((By.ID, 'datemax')))
             driver.execute_script("arguments[0].value = arguments[1];", date_max_box, current_date)
             driver.execute_script("arguments[0].dispatchEvent(new Event('change'));", date_max_box)
@@ -69,33 +69,33 @@ def scrape_emsc():
             print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
         #set region    
         try:
-           search_box=wait.until(EC.element_to_be_clickable((By.ID,'reg')))
-           search_box.click()
-           search_box.clear()
-           time.sleep(0.5)
-           search_box.send_keys('japan')
-           time.sleep(2)
-           search_list = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.prop')))
-           select_all=search_list.find_element(By.CLASS_NAME,"checkall")
-           select_all.click()
-           time.sleep(1)
-           send_check=driver.find_element(By.CSS_SELECTOR,'div.prop-send')
-           send_check.click()
-           time.sleep(1)
+            search_box=wait.until(EC.element_to_be_clickable((By.ID,'reg')))
+            search_box.click()
+            search_box.clear()
+            time.sleep(0.5)
+            search_box.send_keys('japan')
+            time.sleep(2)
+            search_list = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, 'div.prop')))
+            select_all=search_list.find_element(By.CLASS_NAME,"checkall")
+            select_all.click()
+            time.sleep(1)
+            send_check=driver.find_element(By.CSS_SELECTOR,'div.prop-send')
+            send_check.click()
+            time.sleep(1)
         except Exception as ex:
-           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
-           return False 
-           
+            print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
+            return False
 
-        #click search button    
-        try:    
-           submit_button=wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'div.subm input[type="submit"]')))
-           submit_button.click()
-           time.sleep(2)
+
+        #click search button
+        try:
+            submit_button=wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'div.subm input[type="submit"]')))
+            submit_button.click()
+            time.sleep(2)
         except Exception as ex:
-           print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
-           return False
-           
+            print(f"{RED}Exception Occured During Scraping EMSC !{RESET}")
+            return False
+
 
         #find search result
         page_number=1
@@ -114,7 +114,7 @@ def scrape_emsc():
                     time.sleep(5)
                     new_height=driver.execute_script("return document.body.scrollHeight")
                     if new_height==last_height:
-                       break
+                        break
                     last_height=new_height
 
                 #find data of each row (every earthquake)    
@@ -146,10 +146,7 @@ def scrape_emsc():
                         continue     
             
                 try:
-                    next_page = driver.find_element(
-                                       By.XPATH,
-                                "//div[@class='page-cont']//div[contains(@class,'spes') and normalize-space()='›']"
-                                )
+                    next_page = driver.find_element(By.XPATH, "//div[@class='page-cont']//div[contains(@class,'spes') and normalize-space()='›']")
                     next_page_class = next_page.get_attribute("class") or ""
 
                     if "dis" in next_page_class or "oldpag" in next_page_class:
@@ -180,6 +177,5 @@ def scrape_emsc():
         return False    
     finally:
         if driver:
-           driver.quit()  
-         
+            driver.quit()
 
