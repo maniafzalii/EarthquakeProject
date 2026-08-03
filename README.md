@@ -7,7 +7,8 @@ pip install -r requirements.txt
 python main.py
 
 During execution:
-- downloads data from sources
-- cleans the CSVs and creates the "earthquakes" table
-- inserts all cleaned files into table
-- gives you the reports and tables you wanted
+- Data gets extracted from sources to CSV files
+- Preprocessing applies to the CSV files
+- Table with "earthquakes" name gets created
+- All CSV files insert into the table
+- Reports and charts will be available in the end 

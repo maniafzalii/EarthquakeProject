@@ -78,7 +78,7 @@ def linechart_avg_magnitude_time(df):
 
     date_df = df.copy()
     date_df["date"] = pd.to_datetime(date_df["time"]).dt.date
-    avg_daily = date_df.groupby("date")["magnitude"].mean().reser_index(name="average_magnitude")
+    avg_daily = date_df.groupby("date")["magnitude"].mean().reset_index(name="average_magnitude")
 
     plt.figure(figsize=(12, 6))
     plt.plot(
@@ -175,7 +175,7 @@ def heatmap_locations(df):
     plt.figure(figsize=(12, 6))
     sns.heatmap(
         heatmap_data,
-        camp="YlOrRd",
+        cmap="YlOrRd",
         cbar_kws={"label": "Number of earthquakes"}
     )
 
