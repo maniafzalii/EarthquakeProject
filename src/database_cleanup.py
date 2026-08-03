@@ -1,5 +1,5 @@
 from sqlalchemy import text
-from database_setup import get_engine
+from src.database_setup import get_engine
 import unicodedata
 import re
 

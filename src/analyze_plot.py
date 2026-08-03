@@ -239,5 +239,5 @@ def generate_plots():
         heatmap_distance_to_tokyo(df)
 
 
-# if __name__ == "__main__":
-#     generate_plots()
+if __name__ == "__main__":
+    generate_plots()

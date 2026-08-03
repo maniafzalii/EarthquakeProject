@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
-from database_setup import get_engine,Earthquake
+from src.database_setup import get_engine,Earthquake
 
 
 RESET = '\033[0m'
