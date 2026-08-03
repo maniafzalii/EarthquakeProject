@@ -36,27 +36,48 @@ def preprocess_csv():
 
         def parse_time(x):
 
-            try:
-                return pd.to_datetime(x, utc=True)
+            if pd.isna(x):
+                return pd.NaT
 
+            x = str(x).strip()
+
+            # Format: 25/07/2025 12:30:00
+            try:
+                return pd.to_datetime(
+                    x,
+                    format="%d/%m/%Y %H:%M:%S",
+                    utc=True
+                )
             except:
                 pass
 
+            # Format: ISO format -> 2025-07-25T12:30:00Z
             try:
-                return pd.to_datetime(x,format = "%d/%m/%Y %H:%M:%S",utc = True)
-
+                return pd.to_datetime(
+                    x,
+                    format="ISO8601",
+                    utc=True
+                )
             except:
                 pass
 
+            # Format: Jul 25, 2025, 12:30:00
             try:
-                return pd.to_datetime(x,format = "%b %d, %Y, %I:%M:%S",utc = True)
-
+                return pd.to_datetime(
+                    x,
+                    format="%b %d, %Y, %H:%M:%S",
+                    utc=True
+                )
             except:
                 pass
 
+            # Format: 2025-07-25 12:30 PM
             try:
-                return pd.to_datetime(x, format = "%Y-%m-%d %I:%M %p", utc = True)
-
+                return pd.to_datetime(
+                    x,
+                    format="%Y-%m-%d %I:%M %p",
+                    utc=True
+                )
             except:
                 pass
 
@@ -135,7 +156,3 @@ def preprocess_csv():
         print(f"Preprocessing failed: {e}")
 
         return False
-
-if __name__ == "__main__":
-    preprocess_csv()
-
