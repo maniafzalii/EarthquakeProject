@@ -89,43 +89,30 @@ def main():
 
 0. Exit
 
-==================================================
-{RESET}
-""")
-
+=================================================={RESET}""")
         choice = input("Enter your choice: ").strip()
 
         match choice:
-
             case "1":
                 run_step("Collect and Clean Data", collect_and_clean_data)
-
             case "2":
                 run_step("Setup Database", database_setup_and_report)
-
             case "3":
                 run_step("Clean Database", database_cleanup)
-
             case "4":
                 run_step("Export Database", export_database)
-
             case "5":
                 run_step("Run Tests", run_tests)
-
             case "6":
                 run_step("Analysis", task_10_17)
                 run_step("Final Conclusions", analyze_database)
-
             case "7":
                 run_step("Generate Plots", generate_plots)
-
             case "8":
                 run_step("Run Everything", run_everything)
-
             case "0":
                 print(f"{GREEN}\n----- GoodBye -----{RESET}")
                 break
-
             case _:
                 print(f"{RED}\nInvalid input!{RESET}")
                 pause()

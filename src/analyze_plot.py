@@ -4,6 +4,7 @@ from src.database_setup import get_engine
 import pandas as pd
 from sqlalchemy import text
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import seaborn as sns
 import os
 
@@ -172,10 +173,17 @@ def heatmap_locations(df):
         df_edit["longitude"],
         bins=30
     )
+
+    norm = LogNorm(
+        vmin=max(heatmap_data[heatmap_data > 0].min(), 1),
+        vmax=heatmap_data.max()
+    )
+
     plt.figure(figsize=(12, 6))
     sns.heatmap(
         heatmap_data,
-        cmap="YlOrRd",
+        cmap="Blues",
+        norm=norm,
         cbar_kws={"label": "Number of earthquakes"}
     )
 
@@ -218,7 +226,7 @@ def heatmap_distance_to_tokyo(df):
         cbar_kws={"label": "Number of earthquakes"}
     )
     plt.title("Earthquake frequency by distance to tokyo")
-    plt.xlabel("Distance bins")
+    plt.xlabel("X")
     plt.ylabel("Distance range")
     plt.tight_layout()
     plt.savefig(file_path)

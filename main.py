@@ -33,10 +33,12 @@ def main():
                 analyze_database()
                 generate_plots()
                 print(f"{GREEN}----- Analyzing finished -----{RESET}")
-                print(f"{GREEN}----- GoodBye -----{RESET}")
-            case "0":
+                print(f"You can see the charts in 'plots' folder.")
                 print(f"{GREEN}----- GoodBye -----{RESET}")
                 break
+            case "0":
+                print(f"{GREEN}----- GoodBye -----{RESET}")
+                exit()
             case _:
                 print(f"{RED}Invalid input.{RESET}")
 

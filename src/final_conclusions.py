@@ -12,15 +12,13 @@ RESET = '\033[0m'
 #determine largest frequency of depth
 def most_replicated_depth(session):
     
-    depth_frequency=(session.query(Earthquake.depth,func.count().label("count"))
-                   .group_by(Earthquake.depth)
-                    .all())
+    depth_frequency=(session.query(Earthquake.depth,func.count().label("count")).group_by(Earthquake.depth).all())
     depth_frequency_dict={depth:count for depth,count in depth_frequency}
     max_count=0
     for dep in depth_frequency_dict:
         if depth_frequency_dict.get(dep)>=max_count:
             max_count=depth_frequency_dict.get(dep)
-            target_depth=dep    
+            target_depth=dep
     print(f"{BOLD}>>>> Earthquakes with Depth {BLUE}{target_depth}{RESET}{BOLD} Have Maximum  Frequency {BLUE} {max_count} {RESET}{BOLD}in the Database !{RESET}")     
 
 
@@ -28,9 +26,7 @@ def most_replicated_depth(session):
 #determine largest frequency of magnitude
 def most_replicated_magnitude(session):
     
-    magnitude_frequency=(session.query(Earthquake.magnitude,func.count().label("count"))
-                         .group_by(Earthquake.magnitude)
-                         .all())
+    magnitude_frequency=(session.query(Earthquake.magnitude,func.count().label("count")).group_by(Earthquake.magnitude).all())
     magnitude_frequency_dict={magnitude:count for magnitude,count in magnitude_frequency}
     max_count=0
     for mag in magnitude_frequency_dict:
@@ -47,10 +43,7 @@ def analzye_weak_earthquake(session):
     #get list of different sources
     all_sources_query=session.query(Earthquake.source).distinct().all()
     #get sources cover weak earthquakes
-    weak_count_query=(session.query(Earthquake.source,func.count().label("count")).
-                      filter(Earthquake.magnitude<4.0)
-                      .group_by(Earthquake.source)
-                      .all())
+    weak_count_query=(session.query(Earthquake.source,func.count().label("count")).filter(Earthquake.magnitude<4.0).group_by(Earthquake.source).all())
     all_sources={source for (source,) in all_sources_query}
     weak_count={source:count for source,count in weak_count_query}
 
@@ -76,10 +69,8 @@ def compare_weak_sources(session):
     #get list of different sources
     all_sources_query=session.query(Earthquake.source).distinct().all()
     all_sources={source for (source,) in all_sources_query}
-     #get total earthquake for each source
-    total_earthquakes_query=(session.query(Earthquake.source,func.count().label("count"))
-                                 .group_by(Earthquake.source)
-                                 .all())
+    #get total earthquake for each source
+    total_earthquakes_query=(session.query(Earthquake.source,func.count().label("count")).group_by(Earthquake.source).all())
     total_earthquake_dict={source:count for source,count in total_earthquakes_query}
     for source in all_sources:
         #get  number of weak earthquakes registered for this source
@@ -138,15 +129,10 @@ def analyze_strong_earthquake_count(session):
     all_sources_query=session.query(Earthquake.source).distinct().all()
     all_sources={source for (source,) in all_sources_query}
     #get total earthquake for each source
-    total_earthquakes_query=(session.query(Earthquake.source,func.count().label("count"))
-                             .group_by(Earthquake.source)
-                             .all())
+    total_earthquakes_query=(session.query(Earthquake.source,func.count().label("count")).group_by(Earthquake.source).all())
     total_earthquake_dict={source:count for source,count in total_earthquakes_query}
     #calculate number of strong earthquakes,their magnitude >=6.
-    strong_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
-                       .filter(Earthquake.magnitude>=6)
-                       .group_by(Earthquake.source)
-                       .all())
+    strong_earthquakes=(session.query(Earthquake.source,func.count().label("count")).filter(Earthquake.magnitude>=6).group_by(Earthquake.source).all())
     strong_earthquakes_dict={source:count for source,count in strong_earthquakes}
 
     #print result
@@ -166,45 +152,21 @@ def analyze_japan_earthquake_behaviour(session):
     total_number=session.query(func.count(Earthquake.id)).scalar()
 
     #extract strong earthquake's data
-    number_strong_earthquakes=(session.query(func.count(Earthquake.id))
-                             .filter(Earthquake.magnitude>=6.0)
-                             .scalar())
-    avg_strong_earthquakes=(session.query(func.avg(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6.0)
-                            .scalar())
-    max_strong_earthquakes=(session.query(func.max(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6.0)
-                            .scalar())
-    min_strong_earthquakes=(session.query(func.min(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6.0)
-                            .scalar())
+    number_strong_earthquakes=(session.query(func.count(Earthquake.id)).filter(Earthquake.magnitude>=6.0).scalar())
+    avg_strong_earthquakes=(session.query(func.avg(Earthquake.depth)).filter(Earthquake.magnitude>=6.0).scalar())
+    max_strong_earthquakes=(session.query(func.max(Earthquake.depth)).filter(Earthquake.magnitude>=6.0).scalar())
+    min_strong_earthquakes=(session.query(func.min(Earthquake.depth)).filter(Earthquake.magnitude>=6.0).scalar())
     #extract moderate earthquake's data
-    number_moderate_earthquakes=(session.query(func.count(Earthquake.id))
-                                .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
-                                .scalar())
-    avg_moderate_earthquakes=(session.query(func.avg(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
-                              .scalar())
-    max_moderate_earthquakes=(session.query(func.max(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
-                              .scalar())
-    min_moderate_earthquakes=(session.query(func.min(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
-                              .scalar())
+    number_moderate_earthquakes=(session.query(func.count(Earthquake.id)).filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0).scalar())
+    avg_moderate_earthquakes=(session.query(func.avg(Earthquake.depth)).filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0).scalar())
+    max_moderate_earthquakes=(session.query(func.max(Earthquake.depth)).filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0).scalar())
+    min_moderate_earthquakes=(session.query(func.min(Earthquake.depth)).filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0).scalar())
 
     #extract weak earthquake's data
-    number_weak_earthquakes=(session.query(func.count(Earthquake.id))
-                             .filter(Earthquake.magnitude<4.0)
-                             .scalar())
-    avg_weak_earthquakes=(session.query(func.avg(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4.0)
-                          .scalar())
-    max_weak_earthquakes=(session.query(func.max(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4.0)
-                          .scalar())
-    min_weak_earthquakes=(session.query(func.min(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4.0)
-                          .scalar())
+    number_weak_earthquakes=(session.query(func.count(Earthquake.id)).filter(Earthquake.magnitude<4.0).scalar())
+    avg_weak_earthquakes=(session.query(func.avg(Earthquake.depth)).filter(Earthquake.magnitude<4.0).scalar())
+    max_weak_earthquakes=(session.query(func.max(Earthquake.depth)).filter(Earthquake.magnitude<4.0).scalar())
+    min_weak_earthquakes=(session.query(func.min(Earthquake.depth)).filter(Earthquake.magnitude<4.0).scalar())
     
     print(f"{BOLD}>>>> During Last Month {BLUE}{total_number}{RESET}{BOLD} Earthquakes Registered in Japan {RESET}")
     print(f"{BOLD}>>>> Among them : ")
