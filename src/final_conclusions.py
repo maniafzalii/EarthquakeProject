@@ -2,9 +2,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 from src.database_setup import get_engine,Earthquake
 
-
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+BOLD = '\033[1m'
 RESET = '\033[0m'
-YELLOW = '\033[93m'
 
 #determine largest frequency of depth
 def most_replicated_depth(session):
@@ -18,7 +21,7 @@ def most_replicated_depth(session):
         if depth_frequency_dict.get(dep)>=max_count:
             max_count=depth_frequency_dict.get(dep)
             target_depth=dep
-    print(f">>>> Earthquakes with Depth {target_depth} Have Maximum  Frequency {max_count} in the Database !")     
+    print(f"{BOLD}>>>> Earthquakes with Depth {BLUE}{target_depth}{RESET} Have Maximum  Frequency {BLUE} {max_count} {RESET}in the Database !")     
 
 
 
@@ -160,56 +163,56 @@ def analyze_strong_earthquake_count(session):
 #analyze behaviour of earthquake in Japan during last month    
 def analyze_japan_earthquake_behaviour(session):
 
-    total_number=session.query(func.count(Earthquake)).scalar()
+    total_number=session.query(func.count(Earthquake.id)).scalar()
 
     #extract strong earthquake's data
     number_strong_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
-                             .filter(Earthquake.magnitude>=6)
+                             .filter(Earthquake.magnitude>=6.0)
                              .group_by(Earthquake.source)
                              .all())
     avg_strong_earthquakes=(session.query(func.avg(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6)
+                            .filter(Earthquake.magnitude>=6.0)
                             .scalar())
     max_strong_earthquakes=(session.query(func.max(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6)
+                            .filter(Earthquake.magnitude>=6.0)
                             .scalar())
     min_strong_earthquakes=(session.query(func.min(Earthquake.depth))
-                            .filter(Earthquake.magnitude>=6)
+                            .filter(Earthquake.magnitude>=6.0)
                             .scalar())
     #extract moderate earthquake's data
     number_moderate_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
-                                .filter(Earthquake.magnitude<6 and Earthquake.magnitude>=4)
+                                .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
                                 .group_by(Earthquake.source)
                                 .all())
     avg_moderate_earthquakes=(session.query(func.avg(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6 and Earthquake.magnitude>=4)
+                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
                               .scalar())
     max_moderate_earthquakes=(session.query(func.max(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6 and Earthquake.magnitude>=4)
+                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
                               .scalar())
     min_moderate_earthquakes=(session.query(func.min(Earthquake.depth))
-                              .filter(Earthquake.magnitude<6 and Earthquake.magnitude>=4)
+                              .filter(Earthquake.magnitude<6.0 , Earthquake.magnitude>=4.0)
                               .scalar())
 
     #extract weak earthquake's data
     number_weak_earthquakes=(session.query(Earthquake.source,func.count().label("count"))
-                             .filter(Earthquake.magnitude<4)
+                             .filter(Earthquake.magnitude<4.0)
                              .group_by(Earthquake.source).all())
     avg_weak_earthquakes=(session.query(func.avg(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4)
+                          .filter(Earthquake.magnitude<4.0)
                           .scalar())
     max_weak_earthquakes=(session.query(func.max(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4)
+                          .filter(Earthquake.magnitude<4.0)
                           .scalar())
     min_weak_earthquakes=(session.query(func.min(Earthquake.depth))
-                          .filter(Earthquake.magnitude<4)
+                          .filter(Earthquake.magnitude<4.0)
                           .scalar())
     
     print(f">>>> During Last Month {total_number} Earthquakes Registered in Japan ")
     print(">>>> Among them : ")
-    print(f">>>> {number_weak_earthquakes} Weak Earthquakes with average depth {avg_weak_earthquakes}, maximum depth {max_weak_earthquakes} ,minimum depth {min_weak_earthquakes} ")
-    print(f">>>> {number_moderate_earthquakes} Moderate Earthquakes with average depth {avg_moderate_earthquakes}, maximum depth {max_moderate_earthquakes} ,minimum depth {min_moderate_earthquakes} ")
-    print(f">>>> {number_strong_earthquakes} Strong Earthquakes with average depth {avg_strong_earthquakes}, maximum depth {max_strong_earthquakes} ,minimum depth {min_strong_earthquakes} ")
+    print(f">>>> {number_weak_earthquakes} Weak Earthquakes with average depth {avg_weak_earthquakes:.2f}, maximum depth {max_weak_earthquakes} ,minimum depth {min_weak_earthquakes} ")
+    print(f">>>> {number_moderate_earthquakes} Moderate Earthquakes with average depth {avg_moderate_earthquakes:.2f}, maximum depth {max_moderate_earthquakes} ,minimum depth {min_moderate_earthquakes} ")
+    print(f">>>> {number_strong_earthquakes} Strong Earthquakes with average depth {avg_strong_earthquakes:.2f}, maximum depth {max_strong_earthquakes} ,minimum depth {min_strong_earthquakes} ")
     print("Are Registered .")
 
 #give a suggestion for source combination
@@ -252,9 +255,9 @@ def analyze_source_combination_suggestion(session):
     print(">>>> You can Choose among Different Sources According blow Information and Your Priority  ")
     print(f">>>> Source {target_source} Register the Greatest Earthquake Counts {max_count} so It Offers More Precise Data")
     
-    print(f">>>> Source {magnitude_source} Register the Greatest Average of Magnitude {max_magnitude_average} so It Prioritize Magnitude ")
+    print(f">>>> Source {magnitude_source} Register the Greatest Average of Magnitude {max_magnitude_average:.2f} so It Prioritize Magnitude ")
 
-    print(f">>>> Source {depth_source} Register the Greatest Average of depth {max_depth_average} so It Prioritize depth ")
+    print(f">>>> Source {depth_source} Register the Greatest Average of depth {max_depth_average:.2f} so It Prioritize depth ")
 
 def analyze_database():
 

@@ -1,4 +1,5 @@
 time,latitude,longitude,depth,magnitude,place,source
+2026-08-02 14:49:47,42.33,142.98,57.0,5.0,"Hokkaido, Japan Region",GEOFON
 2026-08-02 00:45:38,40.18,142.58,48.0,5.0,"Near East Coast of Honshu, Japan",GEOFON
 2026-08-01 19:10:50,32.02,131.83,10.0,5.2,"Kyushu, Japan",GEOFON
 2026-08-01 12:47:24,32.78,130.6,10.0,5.0,"Kyushu, Japan",GEOFON
@@ -32,6 +33,3 @@ time,latitude,longitude,depth,magnitude,place,source
 2026-07-04 16:57:51,29.56,142.66,10.0,4.7,"Southeast of Honshu, Japan",GEOFON
 2026-07-04 05:03:53,32.11,142.26,10.0,4.9,"Southeast of Honshu, Japan",GEOFON
 2026-07-04 02:56:15,33.41,136.84,384.0,4.6,Near South Coast of Western Honshu,GEOFON
-2026-07-03 04:04:48,26.09,125.76,10.0,6.0,Northeast of Taiwan,GEOFON
-2026-07-03 03:53:24,26.14,125.71,10.0,4.9,Northeast of Taiwan,GEOFON
-2026-07-03 01:44:52,38.84,142.19,38.0,5.1,"Near East Coast of Honshu, Japan",GEOFON
